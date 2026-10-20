@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090b14">
+  <title>NovaForge AI — Image & Video Studio</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #090b14;
+      --panel: #111522;
+      --panel-2: #171c2d;
+      --line: #282e43;
+      --text: #f4f6ff;
+      --muted: #a0a8c2;
+      --purple: #8b5cf6;
+      --cyan: #5eead4;
+      --danger: #ffb4b4;
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: radial-gradient(ellipse at 15% 0%, #20204a 0, transparent 36%), var(--bg); color: var(--text); font: 15px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; min-height: 100vh; }
+    button, textarea, select { font: inherit; }
+    button { cursor: pointer; }
+    .shell { max-width: 1180px; margin: auto; padding: 20px 18px 40px; }
+    header { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 8px 0 28px; }
+    .brand { display: flex; align-items: center; gap: 11px; font-weight: 800; letter-spacing: -.5px; font-size: 19px; }
+    .logo { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 13px; background: linear-gradient(135deg, var(--purple), #3b82f6 65%, var(--cyan)); color: white; font-size: 19px; box-shadow: 0 7px 25px #7c3aed33; }
+    .pill { border: 1px solid var(--line); color: var(--muted); background: #ffffff08; border-radius: 999px; padding: 7px 11px; font-size: 12px; white-space: nowrap; }
+    .hero { text-align: center; padding: 20px 0 28px; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 7px; color: #d5c7ff; background: #8b5cf61c; border: 1px solid #8b5cf64a; padding: 6px 11px; border-radius: 999px; font-size: 12px; }
+    h1 { font-size: clamp(34px, 7vw, 58px); line-height: 1.06; letter-spacing: -2px; margin: 18px 0 12px; }
+    .gradient { background: linear-gradient(90deg, #c4b5fd, #67e8f9); color: transparent; background-clip: text; -webkit-background-clip: text; }
+    .hero p { max-width: 650px; margin: auto; color: var(--muted); font-size: 15px; }
+    .workspace { display: grid; grid-template-columns: minmax(0, .94fr) minmax(0, 1.06fr); gap: 18px; align-items: stretch; }
+    .card { border: 1px solid var(--line); background: linear-gradient(160deg, #151a2b, #0f1220 75%); border-radius: var(--radius); overflow: hidden; box-shadow: 0 18px 60px #00000024; }
+    .card-head { padding: 18px 19px 0; }
+    .card-head h2 { margin: 0; font-size: 17px; }
+    .card-head p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+    .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin: 18px 19px 0; background: #090c16; border: 1px solid var(--line); padding: 5px; border-radius: 13px; }
+    .tab { border: 0; border-radius: 9px; padding: 11px 8px; color: var(--muted); background: transparent; font-weight: 700; }
+    .tab[aria-selected="true"] { color: white; background: linear-gradient(100deg, #7445db, #4e66e9); box-shadow: 0 5px 16px #5b4cdb40; }
+    .form-body { padding: 18px 19px 20px; }
+    .label-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin: 0 0 8px; font-weight: 700; font-size: 13px; }
+    .hint { color: var(--muted); font-weight: 400; font-size: 11px; }
+    textarea { width: 100%; min-height: 132px; resize: vertical; background: #0a0d18; border: 1px solid #30364e; color: var(--text); border-radius: 12px; padding: 13px; outline: none; }
+    textarea:focus, select:focus { border-color: #9a7bff; box-shadow: 0 0 0 3px #8b5cf622; }
+    textarea::placeholder { color: #727b98; }
+    .suggestions { display: flex; flex-wrap: wrap; gap: 7px; margin: 10px 0 19px; }
+    .suggestion { border: 1px solid var(--line); border-radius: 999px; background: #ffffff05; color: #c4cbe0; padding: 6px 9px; font-size: 11px; }
+    .suggestion:hover { border-color: #8b5cf6; color: white; }
+    .options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
+    .field label { display: block; color: #d4d9eb; font-weight: 700; font-size: 12px; margin-bottom: 7px; }
+    select { width: 100%; border: 1px solid #30364e; background: #0a0d18; color: var(--text); border-radius: 10px; padding: 10px; outline: none; }
+    .generate { width: 100%; border: 0; border-radius: 12px; color: #fff; font-weight: 800; padding: 13px 15px; background: linear-gradient(100deg, #8b5cf6, #5369f5); box-shadow: 0 8px 25px #6d54eb30; }
+    .generate:hover { filter: brightness(1.08); }
+    .generate:disabled { opacity: .65; cursor: wait; }
+    .fineprint { margin: 10px 0 0; color: #858eaa; font-size: 11px; text-align: center; }
+    .result { display: flex; flex-direction: column; min-height: 520px; }
+    .result-top { display: flex; align-items: center; justify-content: space-between; padding: 18px 19px; border-bottom: 1px solid var(--line); gap: 12px; }
+    .result-top h2 { margin: 0; font-size: 16px; }
+    .status { color: var(--cyan); font-size: 11px; border: 1px solid #5eead433; background: #5eead40d; padding: 5px 8px; border-radius: 999px; }
+    .preview { flex: 1; min-height: 330px; display: grid; place-items: center; padding: 20px; background-image: linear-gradient(#ffffff04 1px, transparent 1px), linear-gradient(90deg, #ffffff04 1px, transparent 1px); background-size: 24px 24px; }
+    .placeholder { text-align: center; max-width: 330px; }
+    .preview-art { width: 98px; height: 98px; margin: 0 auto 18px; border-radius: 28px; display: grid; place-items: center; font-size: 40px; background: radial-gradient(circle at 30% 20%, #c4b5fd, #6850d5 42%, #172c60 80%); box-shadow: 0 0 65px #7862ff2b; }
+    .placeholder h3 { margin: 0 0 7px; font-size: 18px; }
+    .placeholder p { color: var(--muted); margin: 0; font-size: 13px; }
+    .result-message { display: none; margin: 16px 18px 0; padding: 11px 12px; border-radius: 10px; border: 1px solid #7259bf; background: #8b5cf613; color: #ddd4ff; font-size: 12px; }
+    .result-message.show { display: block; }
+    .result-actions { padding: 15px 18px 18px; display: flex; gap: 10px; border-top: 1px solid var(--line); }
+    .secondary { flex: 1; border: 1px solid var(--line); background: #ffffff06; color: #e2e7f8; border-radius: 10px; padding: 10px; font-weight: 700; }
+    .secondary:disabled { opacity: .4; cursor: not-allowed; }
+    .below { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px; }
+    .mini { border: 1px solid var(--line); background: #ffffff05; padding: 15px; border-radius: 14px; }
+    .mini strong { display: block; font-size: 13px; margin-bottom: 4px; }
+    .mini span { color: var(--muted); font-size: 12px; }
+    footer { color: #7e87a2; text-align: center; padding-top: 24px; font-size: 11px; }
+    @media (max-width: 760px) { .shell { padding: 14px 12px 30px; } header { padding-bottom: 18px; } .hero { padding: 14px 0 22px; } h1 { letter-spacing: -1.2px; } .workspace { grid-template-columns: 1fr; } .result { min-height: 440px; } .preview { min-height: 280px; } .below { grid-template-columns: 1fr; } .pill { font-size: 10px; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div class="brand"><div class="logo" aria-hidden="true">✦</div><span>NovaForge <span class="gradient">AI</span></span></div>
+      <span class="pill">CREATIVE STUDIO · BETA</span>
+    </header>
+    <section class="hero">
+      <span class="eyebrow">✧ Turn ideas into visuals</span>
+      <h1>Your imagination,<br><span class="gradient">made visual.</span></h1>
+      <p>Create a concept for an AI image or video. This starter studio is ready for API integration.</p>
+    </section>
+    <section class="workspace" aria-label="AI generation workspace">
+      <div class="card">
+        <div class="card-head"><h2>Create something amazing</h2><p>Describe your idea and customize the output.</p></div>
+        <div class="tabs" role="tablist" aria-label="Generation type">
+          <button class="tab" id="imageTab" role="tab" aria-selected="true" aria-controls="creator">▧ &nbsp; Image</button>
+          <button class="tab" id="videoTab" role="tab" aria-selected="false" aria-controls="creator">▶ &nbsp; Video</button>
+        </div>
+        <div class="form-body" id="creator">
+          <div class="label-row"><label for="prompt">Your prompt</label><span class="hint" id="counter">0 / 1000</span></div>
+          <textarea id="prompt" maxlength="1000" placeholder="Describe what you want to create… e.g. A majestic Bengal tiger in a misty jungle at sunrise, cinematic lighting, highly detailed."></textarea>
+          <div class="suggestions" aria-label="Prompt ideas">
+            <button class="suggestion" data-prompt="A futuristic city above the clouds at golden hour, cinematic, ultra detailed">✧ Futuristic city</button>
+            <button class="suggestion" data-prompt="A cute red panda astronaut exploring an alien garden, 3D animated film style">✧ Cute character</button>
+            <button class="suggestion" data-prompt="A dramatic mountain landscape under a star-filled sky, cinematic lighting">✧ Epic landscape</button>
+          </div>
+          <div class="options">
+            <div class="field"><label for="ratio">Aspect ratio</label><select id="ratio"><option value="1:1">Square · 1:1</option><option value="9:16">Portrait · 9:16</option><option value="16:9">Landscape · 16:9</option><option value="4:3">Classic · 4:3</option></select></div>
+            <div class="field" id="durationField" hidden><label for="duration">Video duration</label><select id="duration"><option value="5">5 seconds</option><option value="8">8 seconds</option><option value="10">10 seconds</option></select></div>
+            <div class="field" id="qualityField"><label for="quality">Image style</label><select id="quality"><option value="cinematic">Cinematic</option><option value="photorealistic">Photorealistic</option><option value="3d">3D animation</option><option value="illustration">Illustration</option></select></div>
+          </div>
+          <button class="generate" id="generate">✦ &nbsp; Generate image</button>
+          <p class="fineprint">Demo interface only · AI provider not connected yet</p>
+        </div>
+      </div>
+      <div class="card result">
+        <div class="result-top"><h2 id="resultTitle">Your image</h2><span class="status" id="status">● Ready</span></div>
+        <div class="preview" id="preview">
+          <div class="placeholder" id="placeholder"><div class="preview-art" id="previewIcon">✧</div><h3>Your creation starts here</h3><p>Write a prompt on the left and generate your first visual. Your result preview will appear in this area once AI is connected.</p></div>
+          <img id="resultImage" alt="Generated result preview" hidden style="max-width:100%;max-height:480px;border-radius:12px;object-fit:contain">
+          <video id="resultVideo" controls playsinline hidden style="max-width:100%;max-height:480px;border-radius:12px"></video>
+        </div>
+        <div class="result-message" id="message" role="status"></div>
+        <div class="result-actions"><button class="secondary" id="download" disabled>↓ &nbsp; Download result</button><button class="secondary" id="clear">↺ &nbsp; Clear</button></div>
+      </div>
+    </section>
+    <section class="below" aria-label="How it works">
+      <div class="mini"><strong>✧ Prompt to creation</strong><span>Describe your idea in natural language.</span></div>
+      <div class="mini"><strong>◈ Flexible formats</strong><span>Choose square, portrait or landscape.</span></div>
+      <div class="mini"><strong>⬇ Download-ready UI</strong><span>Preview and download controls are prepared for integration.</span></div>
+    </section>
+    <footer>NovaForge AI is a starter project. Generated media requires a connected AI service. Never place secret API keys in frontend code.</footer>
+  </main>
+  <script>
+    const imageTab = document.getElementById('imageTab');
+    const videoTab = document.getElementById('videoTab');
+    const prompt = document.getElementById('prompt');
+    const counter = document.getElementById('counter');
+    const generate = document.getElementById('generate');
+    const durationField = document.getElementById('durationField');
+    const qualityField = document.getElementById('qualityField');
+    const resultTitle = document.getElementById('resultTitle');
+    const status = document.getElementById('status');
+    const message = document.getElementById('message');
+    const placeholder = document.getElementById('placeholder');
+    const resultImage = document.getElementById('resultImage');
+    const resultVideo = document.getElementById('resultVideo');
+    const download = document.getElementById('download');
+    const clear = document.getElementById('clear');
+    let mode = 'image';
+
+    function setMode(nextMode) {
+      mode = nextMode;
+      const isImage = mode === 'image';
+      imageTab.setAttribute('aria-selected', String(isImage));
+      videoTab.setAttribute('aria-selected', String(!isImage));
+      durationField.hidden = isImage;
+      qualityField.hidden = !isImage;
+      generate.textContent = isImage ? '✦  Generate image' : '▶  Generate video';
+      resultTitle.textContent = isImage ? 'Your image' : 'Your video';
+      document.getElementById('previewIcon').textContent = isImage ? '✧' : '▶';
+      prompt.placeholder = isImage
+        ? 'Describe an image… e.g. A majestic Bengal tiger in a misty jungle at sunrise, cinematic lighting, highly detailed.'
+        : 'Describe a video… e.g. A Bengal tiger walks slowly through a misty jungle as sunlight shines through the trees, cinematic camera movement.';
+      message.classList.remove('show');
+      status.textContent = '● Ready';
+    }
+    imageTab.addEventListener('click', () => setMode('image'));
+    videoTab.addEventListener('click', () => setMode('video'));
+    prompt.addEventListener('input', () => counter.textContent = `${prompt.value.length} / 1000`);
+    document.querySelectorAll('[data-prompt]').forEach(button => button.addEventListener('click', () => {
+      prompt.value = button.dataset.prompt;
+      counter.textContent = `${prompt.value.length} / 1000`;
+      prompt.focus();
+    }));
+    generate.addEventListener('click', () => {
+      if (!prompt.value.trim()) {
+        message.textContent = 'Please enter a prompt first.';
+        message.classList.add('show');
+        prompt.focus();
+        return;
+      }
+      status.textContent = '● API not connected';
+      message.textContent = `Your ${mode} request is ready, but no AI provider is connected yet. To generate real media, connect a provider through a secure backend; do not add an API key to this HTML file.`;
+      message.classList.add('show');
+    });
+    clear.addEventListener('click', () => {
+      prompt.value = '';
+      counter.textContent = '0 / 1000';
+      message.classList.remove('show');
+      status.textContent = '● Ready';
+      placeholder.hidden = false;
+      resultImage.hidden = true;
+      resultVideo.hidden = true;
+      resultImage.removeAttribute('src');
+      resultVideo.removeAttribute('src');
+      download.disabled = true;
+      download.onclick = null;
+    });
+    download.addEventListener('click', () => {
+      if (mode === 'image' && resultImage.src) {
+        const a = document.createElement('a'); a.href = resultImage.src; a.download = 'novaforge-image.png'; a.click();
+      } else if (mode === 'video' && resultVideo.src) {
+        const a = document.createElement('a'); a.href = resultVideo.src; a.download = 'novaforge-video.mp4'; a.click();
+      }
+    });
+  </script>
+</body>
+</html>
